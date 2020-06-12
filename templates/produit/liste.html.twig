@@ -1,0 +1,45 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}ProduitController!{% endblock %}
+
+{% block body %}
+<a class="btn btn-primary" href="{{ path('produit_add') }}"><i class="fas fa-plus"></i> Nouveau</a>
+    {% if message_success is defined %}
+        <span class="text-success">
+        {{ message_success }}
+        </span>
+    {% endif %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Liste des produits</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>N°</th>
+                      <th>Libelle du produit</th>
+                      <th>Quantité en stock</th>
+                      <th>Options</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for produit in produits %}
+                    <tr>
+                      <td>{{ produit.id }}</td>
+                      <td>{{ produit.Libelle }}</td>
+                      <td>{{ produit.qtStock }}</td>
+                      <td>
+                        <a class="btn btn-warning" href="{{ path('produit_get',{'id': produit.id}) }}"><i class="fas fa-edit"></i></a>
+                        <a class="btn btn-danger" href="{{ path('produit_get',{'id': produit.id}) }}"><i class="fas fa-trash"></i></a>
+                      </td>
+                    </tr>
+                   {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+{% endblock %}

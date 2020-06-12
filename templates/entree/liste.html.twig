@@ -1,0 +1,47 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}EntreeController!{% endblock %}
+
+{% block body %}
+<a class="btn btn-primary" href="{{ path('entree_add') }}"><i class="fas fa-plus"></i> Nouveau</a>
+    {% if message_success is defined %}
+        <span class="text-success">
+        {{ message_success }}
+        </span>
+    {% endif %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Liste des entrées</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>N°</th>
+                      <th>Date d'entrée</th>
+                      <th>Quantité</th>
+                      <th>Produit</th>
+                      <th>Options</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for entree in entrees %}
+                    <tr>
+                      <td>{{ entree.id }}</td>
+                      <td>{{ entree.dateE | date('d/m/Y') }}</td>
+                      <td>{{ entree.qteE }}</td>
+                      <td>{{ entree.produit.libelle }}</td>
+                      <td>
+                        <a class="btn btn-warning" href="{{ path('entree_get',{'id': entree.id}) }}"><i class="fas fa-edit"></i></a>
+                        <a class="btn btn-danger" href="{{ path('entree_get',{'id': entree.id}) }}"><i class="fas fa-trash"></i></a>
+                      </td>
+                    </tr>
+                   {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+{% endblock %}

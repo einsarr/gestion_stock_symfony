@@ -1,0 +1,22 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}ProduitController!{% endblock %}
+
+{% block body %}
+<a class="btn btn-info" href=""> Modification du produit</a><br><br>
+    <form method="POST" action="">
+        <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <input type="text" class="form-control form-control-user" id="exampleFirstName" value={{ produit.libelle }} name="libelle">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <input type="text" class="form-control form-control-user" id="exampleFirstName" value={{ produit.qtStock }} name="qteStock">
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-warning">Mettre à jour</button>
+        </div>
+    </form>
+{% endblock %}

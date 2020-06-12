@@ -1,0 +1,47 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}SortieController!{% endblock %}
+
+{% block body %}
+<a class="btn btn-primary" href="{{ path('sortie_add') }}"><i class="fas fa-plus"></i> Nouveau</a>
+    {% if message_success is defined %}
+        <span class="text-success">
+        {{ message_success }}
+        </span>
+    {% endif %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Liste des sorties</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>N°</th>
+                      <th>Libelle du produit</th>
+                      <th>Quantité en stock</th>
+                      <th>Produit</th>
+                      <th>Options</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for sortie in sorties %}
+                    <tr>
+                      <td>{{ sortie.id }}</td>
+                      <td>{{ sortie.dateS | date('d/m/Y') }}</td>
+                      <td>{{ sortie.qteS }}</td>
+                      <td>{{ sortie.produit.libelle }}</td>
+                      <td>
+                        <a class="btn btn-warning" href="{{ path('sortie_get',{'id': sortie.id}) }}"><i class="fas fa-edit"></i></a>
+                        <a class="btn btn-danger" href="{{ path('sortie_get',{'id': sortie.id}) }}"><i class="fas fa-trash"></i></a>
+                      </td>
+                    </tr>
+                   {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+{% endblock %}
