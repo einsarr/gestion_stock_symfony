@@ -1,6 +1,6 @@
 {% extends 'accueil.html.twig' %}
 
-{% block title %}ProduitController!{% endblock %}
+{% block title %}Gestion des produits{% endblock %}
 
 {% block body %}
 <a class="btn btn-primary" href="{{ path('produit_add') }}"><i class="fas fa-plus"></i> Nouveau</a>
@@ -9,37 +9,72 @@
         {{ message_success }}
         </span>
     {% endif %}
-
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Liste des produits</h6>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>N°</th>
-                      <th>Libelle du produit</th>
-                      <th>Quantité en stock</th>
-                      <th>Options</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {% for produit in produits %}
-                    <tr>
-                      <td>{{ produit.id }}</td>
-                      <td>{{ produit.Libelle }}</td>
-                      <td>{{ produit.qtStock }}</td>
-                      <td>
-                        <a class="btn btn-warning" href="{{ path('produit_get',{'id': produit.id}) }}"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" href="{{ path('produit_get',{'id': produit.id}) }}"><i class="fas fa-trash"></i></a>
-                      </td>
-                    </tr>
-                   {% endfor %}
-                  </tbody>
-                </table>
+      <div class="row">
+          <div class="col-md-8">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Liste des produits</h6>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th>N°</th>
+                          <th>Libelle</th>
+                          <th>Quantité</th>
+                          <th>Etat</th>
+                          <th>Options</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% if produits is defined %}
+                      {% for produit in produits %}
+                        <tr>
+                          <td>{{ produit.id }}</td>
+                          <td>{{ produit.Libelle }}</td>
+                          <td>{{ produit.qtStock }}</td>
+                          <td>
+                              {% if  produit.qtStock == 0 %}
+                                  <span class="btn btn-danger">
+                                    rupture de stock
+                                  </span>
+                              {% endif %}
+                              {% if  produit.qtStock <= 15 and produit.qtStock > 0 %}
+                                  <span class="btn btn-warning">
+                                    stock vers la rupt
+                                  </span>
+                              {% endif %}
+                              {% if  produit.qtStock <= 50 and produit.qtStock >15 %}
+                                  <span class="btn btn-info">
+                                    stock minmal
+                                  </span>
+                              {% endif %}
+                              {% if  produit.qtStock > 50 %}
+                                  <span class="btn btn-success">
+                                    Stock en bon état
+                                  </span>
+                              {% endif %}
+                          </td>
+                          <td>
+                            <a class="btn btn-warning" href="{{ path('update_produit',{'id': produit.id}) }}"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-danger" href="{{ path('delete_produit',{'id': produit.id}) }}" onClick="return confirm('Etez vous sure de vouloir suprimer')"><i class="fas fa-trash"></i></a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      {% endif %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
           </div>
+          <div class="card col-md-4">
+              <div class="card-header">Formulaire de gestion des produits</div>
+              <div class="card-body">
+                  {{form(form)}}
+              </div>
+          </div>
+      </div>
+        
 {% endblock %}

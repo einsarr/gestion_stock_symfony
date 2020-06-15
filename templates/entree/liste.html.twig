@@ -9,10 +9,16 @@
         {{ message_success }}
         </span>
     {% endif %}
-
+     {% if message_error is defined %}
+        <span class="text-danger">
+        {{ message_error }}
+        </span>
+    {% endif %}
+<div class="row">
+          <div class="col-md-8">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Liste des entrées</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Liste des entreés</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -20,7 +26,7 @@
                   <thead>
                     <tr>
                       <th>N°</th>
-                      <th>Date d'entrée</th>
+                      <th>Date entree</th>
                       <th>Quantité</th>
                       <th>Produit</th>
                       <th>Options</th>
@@ -29,13 +35,13 @@
                   <tbody>
                   {% for entree in entrees %}
                     <tr>
-                      <td>{{ entree.id }}</td>
+                      <td>{{ entree.id}}</td>
                       <td>{{ entree.dateE | date('d/m/Y') }}</td>
                       <td>{{ entree.qteE }}</td>
                       <td>{{ entree.produit.libelle }}</td>
                       <td>
-                        <a class="btn btn-warning" href="{{ path('entree_get',{'id': entree.id}) }}"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" href="{{ path('entree_get',{'id': entree.id}) }}"><i class="fas fa-trash"></i></a>
+                        <a class="btn btn-warning" href="{{ path('update_entree',{'id': entree.id}) }}"><i class="fas fa-edit"></i></a>
+                        <a class="btn btn-danger" href="{{ path('delete_entree',{'id': entree.id}) }}" onClick="return confirm('Etez vous sure de vouloir suprimer')"><i class="fas fa-trash"></i></a>
                       </td>
                     </tr>
                    {% endfor %}
@@ -44,4 +50,12 @@
               </div>
             </div>
           </div>
+          </div>
+          <div class="card col-md-4">
+              <div class="card-header">Formulaire de gestion des entree</div>
+              <div class="card-body">
+                  {{form(form)}}
+              </div>
+          </div>
+      </div>
 {% endblock %}

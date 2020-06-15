@@ -10,7 +10,9 @@
     <meta name="description" content="First App Samane | Application des gestion des utilisateurs">
     <meta name="author" content="ngorseck@gmail.com">
 
-    <title>Gest-User</title>
+    <title>{% block title %}
+                    Accueil
+                {% endblock %}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('template/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -34,7 +36,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Gest-User</div>
+                <div class="sidebar-brand-text mx-3"></div>
             </a>
 
             <!-- Divider -->

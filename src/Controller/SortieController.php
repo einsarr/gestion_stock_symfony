@@ -3,10 +3,13 @@
 namespace App\Controller;
 use App\Entity\Sortie;
 use App\Entity\Produit;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Form\SortieType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 class SortieController extends AbstractController
 {
     /**
@@ -14,9 +17,15 @@ class SortieController extends AbstractController
      */
     public function index()
     {
+        $sortie = new Sortie();
+        $form = $this->createForm(SortieType::class,$sortie,
+                array('action'=>$this->generateUrl('sortie_add'))
+            );
+        $data['form'] = $form->createView();
+
         $sortie = $this->getDoctrine()->getRepository(Sortie::class);
-        $sorties = $sortie->findAll();
-        return $this->render('sortie/liste.html.twig',['sorties'=>$sorties]);
+        $data['sorties'] =  $sortie->findAll();
+        return $this->render('sortie/liste.html.twig',$data);
     }
     /**
      * @Route("/Sortie/get/{id}", name="sortie_get")
@@ -30,33 +39,64 @@ class SortieController extends AbstractController
      */
     public function add(Request $request)
     {
-        //var_dump($request);
-        $msgE="";
-        $produit = $this->getDoctrine()->getRepository(Produit::class);
-        $produits = $produit->findAll();
-        if($request->request->count() > 0)
-        {
-            $sortie = new Sortie();
-            $sortie->setLibelle($request->request->get('libelle'))
-                    ->setQtStock($request->request->get('qteStock'));
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($sortie);
-            $em->flush();
-            $msgS="Insertion réussie avec succès";
-            return $this->render('sortie/liste.html.twig',array('message_success'=>$msgS));
-        }
-        else{
-            $msgE="Erreur d'insertion";
-            return $this->render('sortie/add.html.twig',array('message_error'=>$msgE,'produits'=>$produits));
-        }
-        return $this->render('sortie/add.html.twig',['produits'=>$produits]);
-        // $p = new Sortie();
-        // $p->setLibelle("Clavier");
-        // $p->setQtStock(0.0);
+        $s = new Sortie();
+        $p = new Produit();
+        $form = $this->createForm(SortieType::class, $s);
+        $form->handleRequest($request);
+        $data=[];
+        if ($form->isSubmitted() && $form->isValid()) {
+            $s = $form->getData();
 
-        // $em = $this->getDoctrine()->getManager();
-        // $em->persist($p);
-        // $em->flush();
-        // return $this->render('sortie/liste.html.twig');
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($s);
+            $em->flush();
+            //Mise à jour du produit
+            $p = $em->getRepository(Produit::class)->find($s->getProduit()->getId());
+            if($s->getQteS() <= $p->getQtStock()){
+                $stock = $p->getQtStock() - $s->getQteS();
+                $p->setQtStock($stock);
+                $em->flush();
+                $data['message_success'] = "Message succès";
+            }
+            else{
+                $data['message_error'] = "Stock insufisant";
+            }
+        }
+        return $this->redirectToRoute('sortie_liste',$data);
+    }
+    /**
+     * @Route("/update_sortie/{id}", name="update_sortie")
+     */
+    public function update(Request $request, int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $sorties = $this->getDoctrine()->getRepository(Sortie::class);
+
+        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+        $data = array(
+            "form_title" => "Modifier un produit",
+            "form" => $form->createView(),
+            "sorties"=>$sorties->findAll()
+        );
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $entityManager->flush();
+        }
+        return $this->render("sortie/liste.html.twig",$data);
+    }
+    /**
+     * @Route("/delete_sortie/{id}", name="delete_sortie")
+     */
+    public function delete(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+        $entityManager->remove($sortie);
+        $entityManager->flush();
+
+        return $this->redirectToRoute("sortie_liste");
     }
 }
